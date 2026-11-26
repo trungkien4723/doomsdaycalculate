@@ -36,7 +36,7 @@
       background: #0f172a; text-align: center;
     }
     .day { font-size: 28px; font-weight: 700; color: #38bdf8; }
-    .detail { margin-top: 6px; font-size: 13px; color: #94a3b8; }
+    .calc { background:#111827; border-radius:8px; padding:12px; font-family: monospace; white-space: pre-wrap; }
   </style>
 </head>
 <body>
@@ -49,6 +49,7 @@
     <div class="result" id="result" style="display:none;">
       <div class="day" id="dayname"></div>
       <div class="detail" id="detail"></div>
+      <div class="calc" id="calcDetail" style="margin-top:12px; text-align:left; font-size:13px; color:#cbd5e1; line-height:1.7;"></div>
     </div>
   </div>
   <script>
@@ -81,6 +82,29 @@
       const idx = dayOfWeek(y,mo,da);
       document.getElementById('dayname').textContent = DAYS[idx];
       document.getElementById('detail').textContent = `${da}/${mo}/${y} → ${DAYS[idx]}`;
+      // breakdown
+      const anchors = [2,0,5,3];
+      const c = Math.floor(y/100);
+      const anchor = anchors[c % 4];
+      const yy = y % 100;
+      const a = Math.floor(yy/12);
+      const b = yy % 12;
+      const cc = Math.floor(b/4);
+      const Y = ((anchor + a + b + cc) % 7 + 7) % 7;
+      const md = monthDoomsday(y,mo);
+      const diff = da - md;
+      const res = ((Y + diff) % 7 + 7) % 7;
+      const lines = [
+        `Năm ${y}: thế kỷ ${c} → mốc anchor = ${anchor} (${DAYS[anchor]})`,
+        `yy = ${y} mod 100 = ${yy}`,
+        `a = floor(${yy}/12) = ${a}`,
+        `b = ${yy} mod 12 = ${b}`,
+        `c = floor(${b}/4) = ${cc}`,
+        `Y (Doomsday năm) = (${anchor}+${a}+${b}+${cc}) mod 7 = ${Y} (${DAYS[Y]})`,
+        `Doomsday tháng ${mo} = ${md}`,
+        `Kết quả = (Y + (${da} - ${md})) mod 7 = (${Y} + ${diff}) mod 7 = ${res} (${DAYS[res]})`,
+      ];
+      document.getElementById('calcDetail').textContent = lines.join('\\n');
       document.getElementById('result').style.display = 'block';
     }
     document.getElementById('calc').addEventListener('click', calc);
