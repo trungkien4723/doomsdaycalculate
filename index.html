@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doomsday — Tính thứ trong tuần</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a; color: #e2e8f0;
+    }
+    .card {
+      width: 100%; max-width: 420px;
+      background: #1e293b; border-radius: 16px;
+      padding: 28px; box-shadow: 0 10px 40px rgba(0,0,0,.4);
+    }
+    h1 { margin: 0 0 6px; font-size: 22px; }
+    p.sub { margin: 0 0 20px; color: #94a3b8; font-size: 14px; }
+    label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 6px; }
+    input[type="date"] {
+      width: 100%; padding: 12px; border-radius: 10px;
+      border: 1px solid #334155; background: #0f172a; color: #e2e8f0;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 14px; width: 100%; padding: 12px;
+      border: 0; border-radius: 10px; background: #3b82f6; color: white;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    button:hover { background: #2563eb; }
+    .result {
+      margin-top: 20px; padding: 16px; border-radius: 10px;
+      background: #0f172a; text-align: center;
+    }
+    .day { font-size: 28px; font-weight: 700; color: #38bdf8; }
+    .detail { margin-top: 6px; font-size: 13px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📅 Doomsday</h1>
+    <p class="sub">Tính thứ trong tuần bằng công thức Doomsday</p>
+    <label for="date">Chọn ngày</label>
+    <input type="date" id="date" />
+    <button id="calc">Tính</button>
+    <div class="result" id="result" style="display:none;">
+      <div class="day" id="dayname"></div>
+      <div class="detail" id="detail"></div>
+    </div>
+  </div>
+  <script>
+    const DAYS = ['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
+    function isLeap(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+    function doomsdayYear(y){
+      const anchors = [2,0,5,3];
+      const c = Math.floor(y/100);
+      const yy = y % 100;
+      const anchor = anchors[c % 4];
+      const a = Math.floor(yy/12);
+      const b = yy % 12;
+      const c2 = Math.floor(b/4);
+      return ((anchor + a + b + c2) % 7 + 7) % 7;
+    }
+    function monthDoomsday(y,m){
+      const leap = isLeap(y);
+      const t = [0, leap?4:3, leap?29:28, 0, 4, 9, 6, 11, 8, 5, 10, 7, 12];
+      return t[m];
+    }
+    function dayOfWeek(y,m,d){
+      const dd = doomsdayYear(y);
+      const md = monthDoomsday(y,m);
+      return ((dd + (d - md)) % 7 + 7) % 7;
+    }
+    function calc(){
+      const v = document.getElementById('date').value;
+      if(!v) return;
+      const [y,mo,da] = v.split('-').map(Number);
+      const idx = dayOfWeek(y,mo,da);
+      document.getElementById('dayname').textContent = DAYS[idx];
+      document.getElementById('detail').textContent = `${da}/${mo}/${y} → ${DAYS[idx]}`;
+      document.getElementById('result').style.display = 'block';
+    }
+    document.getElementById('calc').addEventListener('click', calc);
+    document.getElementById('date').addEventListener('change', calc);
+    // default today
+    const t = new Date();
+    document.getElementById('date').value = t.toISOString().slice(0,10);
+    calc();
+  </script>
+</body>
+</html>
