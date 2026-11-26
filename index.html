@@ -95,14 +95,15 @@
       const diff = da - md;
       const res = ((Y + diff) % 7 + 7) % 7;
       const lines = [
-        `Năm ${y}: thế kỷ ${c} → mốc anchor = ${anchor} (${DAYS[anchor]})`,
-        `yy = ${y} mod 100 = ${yy}`,
-        `a = floor(${yy}/12) = ${a}`,
-        `b = ${yy} mod 12 = ${b}`,
-        `c = floor(${b}/4) = ${cc}`,
-        `Y (Doomsday năm) = (${anchor}+${a}+${b}+${cc}) mod 7 = ${Y} (${DAYS[Y]})`,
-        `Doomsday tháng ${mo} = ${md}`,
-        `Kết quả = (Y + (${da} - ${md})) mod 7 = (${Y} + ${diff}) mod 7 = ${res} (${DAYS[res]})`,
+        `Y = ${y}`,
+        `C = ⌊Y/100⌋ = ${c}  →  A (anchor thế kỷ) = ${anchor}  (${DAYS[anchor]})`,
+        `y = Y mod 100 = ${yy}`,
+        `a = ⌊y/12⌋ = ${a}`,
+        `b = y mod 12 = ${b}`,
+        `c = ⌊b/4⌋ = ${cc}`,
+        `D_y = (A + a + b + c) mod 7 = (${anchor}+${a}+${b}+${cc}) mod 7 = ${Y}  (${DAYS[Y]})`,
+        `D_m = doomsday(tháng ${mo}) = ${md}`,
+        `Kết quả = (D_y + (d - D_m)) mod 7 = (${Y} + (${da} - ${md})) mod 7 = ${res}  (${DAYS[res]})`,
       ];
       document.getElementById('calcDetail').textContent = lines.join('\\n');
       document.getElementById('result').style.display = 'block';
